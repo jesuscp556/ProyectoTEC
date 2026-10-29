@@ -1,0 +1,53 @@
+Créame un script de Bash llamado script_miguel.sh, compatible con la Bash 3.2
+que trae macOS por defecto, y que se ejecute así:
+
+    ./script_miguel.sh <archivo.zip> <directorio_destino>
+
+Requisitos funcionales:
+
+1. Validación: si no llegan exactamente 2 argumentos, imprimir
+   "Uso: ./script_miguel.sh <archivo.zip> <directorio_destino>" y salir con exit 1.
+   Si el .zip no existe, mostrar un error claro y salir con exit 1. También
+   validar que exista el programa unzip.
+
+2. Descomprimir: crear una carpeta temporal con mktemp -d, descomprimir ahí con
+   unzip -q -d, y si unzip falla, avisar, borrar la temporal y salir con exit 1.
+   IMPORTANTE: el .zip original nunca se debe modificar ni borrar; solo se lee.
+   Al terminar la organización, borrar únicamente la carpeta temporal.
+
+3. Organizar: crear con mkdir -p estas subcarpetas dentro del destino:
+   documentos/, imagenes/, codigo/, multimedia/, otros/.
+   Clasificar cada archivo (incluyendo los que estén en subcarpetas del zip)
+   según su extensión, pasada antes a minúsculas con tr:
+   - py, pyw                      -> codigo/
+   - txt, md, pdf, doc, docx, ppt, pptx, xls, xlsx, csv -> documentos/
+   - jpg, jpeg, png, gif, bmp, webp, svg, ico, tif, tiff -> imagenes/
+   - mp3, wav, mp4, mov, avi, mkv, m4a -> multimedia/
+   - todo lo demás (sin extensión incluida) -> otros/
+   Ignorar cualquier ruta que contenga __MACOSX (basura de macOS).
+   Copiar con cp (no mover). Si ya existe un archivo con ese mismo nombre en la
+   carpeta destino, renombrarlo agregando _1, _2, _3... antes de la extensión,
+   para no sobrescribir nada (por ejemplo logo.png -> logo_1.png).
+   Imprimir una línea por archivo copiado, tipo "  nombre.ext  ->  imagenes/".
+
+4. Auditoría: después de organizar, recorrer SOLO los .py que quedaron en
+   codigo/ y buscar en cada uno el texto "PySide6" con grep -n -i (número de
+   línea y línea exacta). Por cada archivo imprimir:
+   - la ruta del archivo,
+   - si contiene o no PySide6,
+   - y todas las coincidencias con su número de línea.
+   Llevar dos contadores y mostrar un resumen final: total de .py analizados y
+   cuántos de ellos usan PySide6.
+
+Estilo del código (importante):
+- Soy principiante, así que usa lo más básico posible: if, case, for, while,
+  variables, echo, find, grep, mkdir, cp, rm, basename, tr.
+- NO uses arrays asociativos, mapfile, awk, funciones, set -e, ni nada sofisticado.
+- Comenta cada bloque en español, explicando qué hace y qué significan las
+  opciones de los comandos (por ejemplo -n, -i, -p, -d, -q).
+- Comillas dobles en todas las variables para que funcionen los nombres con espacios.
+- Usa find + "while IFS= read -r" para que los nombres con espacios no se rompan.
+- En el loop de auditoría, protege el caso de carpeta vacía con "if [ ! -f "$ARCHIVO" ]; then continue; fi".
+- Al final deja el archivo con permisos de ejecución (chmod +x).
+
+No me hagas preguntas: escribe el script completo de una vez.
