@@ -165,6 +165,13 @@ echo "=============================================="
 TOTAL_PY=0
 TOTAL_CON_PYSIDE6=0
 
+# Carpeta donde se van a juntar los .py que SI contienen la palabra buscada.
+# El nombre sigue el formato "contiene_[palabra]".
+CARPETA_PYSIDE6="$DESTINO/codigo/contiene_PySide6"
+
+# mkdir -p crea la carpeta (y no da error si ya existe).
+mkdir -p "$CARPETA_PYSIDE6"
+
 # El patron "*.py" toma todos los .py de la carpeta codigo.
 for ARCHIVO in "$DESTINO/codigo/"*.py; do
 
@@ -189,6 +196,12 @@ for ARCHIVO in "$DESTINO/codigo/"*.py; do
         TOTAL_CON_PYSIDE6=$((TOTAL_CON_PYSIDE6 + 1))
         echo "  SI usa PySide6. Coincidencias (linea: texto):"
         echo "$COINCIDENCIAS"
+
+        # Si el archivo SI contiene la palabra, lo movemos a la subcarpeta.
+        # El for ya tiene su lista de archivos guardada, asi que quitar
+        # archivos de codigo/ a media vuelta no rompe el recorrido.
+        mv "$ARCHIVO" "$CARPETA_PYSIDE6/"
+        echo "  Movido a codigo/contiene_PySide6/"
     else
         echo "  NO usa PySide6."
     fi
@@ -205,5 +218,6 @@ echo " RESUMEN"
 echo "=============================================="
 echo "Archivos .py analizados:              $TOTAL_PY"
 echo "Archivos .py que usan PySide6:        $TOTAL_CON_PYSIDE6"
+echo "Agrupados en:                         $CARPETA_PYSIDE6"
 echo ""
 echo "Listo. Archivos organizados en: $DESTINO"
