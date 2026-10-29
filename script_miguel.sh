@@ -8,7 +8,7 @@
 #   2. Descomprime el .zip en una carpeta temporal.
 #   3. Ordena los archivos en documentos/, imagenes/, codigo/,
 #      multimedia/ y otros/.
-#   4. Revisa cada archivo .py buscando cv2 / opencv.
+#   4. Revisa cada archivo .py buscando PySide6.
 #   5. Imprime un resumen final.
 #
 # Uso:
@@ -154,7 +154,7 @@ rm -rf "$TEMPORAL"
 
 
 # ------------------------------------------------------------
-# PASO 6: auditar los archivos .py buscando cv2 / opencv
+# PASO 6: auditar los archivos .py buscando PySide6
 # ------------------------------------------------------------
 echo ""
 echo "=============================================="
@@ -163,7 +163,7 @@ echo "=============================================="
 
 # Contadores para el resumen final.
 TOTAL_PY=0
-TOTAL_CON_CV2=0
+TOTAL_CON_PYSIDE6=0
 
 # El patron "*.py" toma todos los .py de la carpeta codigo.
 for ARCHIVO in "$DESTINO/codigo/"*.py; do
@@ -180,18 +180,17 @@ for ARCHIVO in "$DESTINO/codigo/"*.py; do
 
     # grep busca texto dentro del archivo:
     #   -n  muestra el numero de linea
-    #   -i  ignora mayusculas/minusculas
-    #   -E  permite varios patrones separados con |
+    #   -i  ignora mayusculas/minusculas (pyside6 = PySide6)
     # Guardamos el resultado para revisar si encontro algo.
-    COINCIDENCIAS=$(grep -n -i -E "cv2|opencv" "$ARCHIVO")
+    COINCIDENCIAS=$(grep -n -i "PySide6" "$ARCHIVO")
 
     # -n en el if significa: "el texto no esta vacio?".
     if [ -n "$COINCIDENCIAS" ]; then
-        TOTAL_CON_CV2=$((TOTAL_CON_CV2 + 1))
-        echo "  SI usa cv2 / opencv. Coincidencias (linea: texto):"
+        TOTAL_CON_PYSIDE6=$((TOTAL_CON_PYSIDE6 + 1))
+        echo "  SI usa PySide6. Coincidencias (linea: texto):"
         echo "$COINCIDENCIAS"
     else
-        echo "  NO usa cv2 / opencv."
+        echo "  NO usa PySide6."
     fi
 
 done
@@ -204,7 +203,7 @@ echo ""
 echo "=============================================="
 echo " RESUMEN"
 echo "=============================================="
-echo "Archivos .py analizados:            $TOTAL_PY"
-echo "Archivos .py que usan cv2/opencv:   $TOTAL_CON_CV2"
+echo "Archivos .py analizados:              $TOTAL_PY"
+echo "Archivos .py que usan PySide6:        $TOTAL_CON_PYSIDE6"
 echo ""
 echo "Listo. Archivos organizados en: $DESTINO"
